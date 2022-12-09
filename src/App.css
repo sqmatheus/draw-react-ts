@@ -1,38 +1,95 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app {
+  margin: 1rem auto 0 auto;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 95vw;
+}
+
+.canvas {
+  border-radius: 0.5rem;
+  width: inherit;
+  height: 80vh;
+  background-color: #020202;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: inherit;
+}
+
+.shapes {
+  display: flex;
+  gap: 1rem;
+  list-style-type: none;
+}
+
+.shape {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #6f6f6f;
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shape div {
+  width: 20px;
+  height: 20px;
+  background-color: red;
+}
+
+#shape-hover {
+  position: absolute;
+  top: -30px;
+  width: 70px;
+  height: 25px;
+  border-radius: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #adadad;
+  color: #020202;
+}
+
+.shape-active {
+  border: 1px solid red;
+}
+
+.circle {
+  border-radius: 50%;
+}
+
+.triangle {
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+}
+
+.slider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.slider h3 {
+  font-weight: 400;
+  color: #020202;
+}
+
+.clear {
+  height: 40px;
+  color: white;
+  background-color: red;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  padding: 0 20px;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
 }
