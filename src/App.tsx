@@ -7,14 +7,11 @@ interface Shape {
 }
 
 interface Point {
-  id: number;
   shapeIndex: number;
   size: number;
   x: number;
   y: number;
 }
-
-let id = 0; // idk if its a good solution, but works :)
 
 const SHAPES: Shape[] = [
   {
@@ -35,15 +32,18 @@ function App() {
   const [points, setPoints] = useState<Point[]>([]);
   const [pointSize, setPointSize] = useState<number>(10);
 
-  const click = ({ clientX, clientY }: React.MouseEvent) => {
+  const click = ({
+    clientX,
+    clientY,
+    currentTarget,
+  }: React.MouseEvent<HTMLDivElement>) => {
     setPoints((pts) => [
       ...pts,
       {
-        id: ++id,
         shapeIndex: selectedShape,
         size: pointSize,
-        x: clientX,
-        y: clientY,
+        x: clientX - currentTarget.offsetLeft,
+        y: clientY - currentTarget.offsetTop,
       },
     ]);
   };
@@ -54,12 +54,12 @@ function App() {
   return (
     <div className="app">
       <div className="canvas" onClick={click}>
-        {points.map(({ id, shapeIndex, size, x, y }) => {
+        {points.map(({ shapeIndex, size, x, y }, index) => {
           const offset = size / 2;
           const [left, top] = [x - offset, y - offset];
           return (
             <div
-              key={id}
+              key={index}
               style={{
                 position: "absolute",
                 left,
