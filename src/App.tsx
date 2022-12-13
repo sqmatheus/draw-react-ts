@@ -42,10 +42,15 @@ function App() {
     clientY,
     currentTarget,
   }: React.MouseEvent<HTMLDivElement>) => {
+    const { scrollX, scrollY } = window;
+
+    const { offsetLeft, offsetTop } = currentTarget;
+
     const offset = pointSize / 2;
+
     const [x, y] = [
-      clientX - currentTarget.offsetLeft - offset,
-      clientY - currentTarget.offsetTop - offset,
+      clientX - (-scrollX + offsetLeft) - offset,
+      clientY - (-scrollY + offsetTop) - offset,
     ];
     setPoints((pts) => [
       ...pts,
