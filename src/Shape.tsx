@@ -10,6 +10,7 @@ export enum ShapeType {
 export interface ShapeProps {
   size: number;
   type: ShapeType;
+  style?: React.CSSProperties;
   color?: string;
   positionX?: number;
   positionY?: number;
@@ -17,6 +18,7 @@ export interface ShapeProps {
 
 export const Shape = (props: ShapeProps) => {
   const style: React.CSSProperties = {
+    ...props.style,
     width: props.size,
     height: props.size,
     backgroundColor: props.color ?? "red",

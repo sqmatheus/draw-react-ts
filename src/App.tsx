@@ -7,12 +7,16 @@ interface IShape {
   shapeType: ShapeType;
 }
 
+interface Vec2 {
+  x: number;
+  y: number;
+}
+
 interface Point {
   shapeIndex: number;
   size: number;
   color: string;
-  x: number;
-  y: number;
+  position: Vec2;
 }
 
 const SHAPES: IShape[] = [
@@ -36,38 +40,58 @@ function App() {
   const [selectedColor, setSelectedColor] = useState<string>("#ffffff");
   const [selectedShape, setSelectedShape] = useState<number>(0);
   const [hoverShape, setHoverShape] = useState<string | undefined>(undefined);
+  const [preview, setPreview] = useState<Vec2 | undefined>(undefined);
 
-  const click = ({
+  const calculatePosition = (
+    clientX: number,
+    clientY: number,
+    { offsetLeft, offsetTop }: HTMLDivElement
+  ) => {
+    const { scrollX, scrollY } = window;
+    const offset = pointSize / 2;
+    return [
+      clientX - (-scrollX + offsetLeft) - offset,
+      clientY - (-scrollY + offsetTop) - offset,
+    ];
+  };
+
+  const draw = ({
     clientX,
     clientY,
     currentTarget,
   }: React.MouseEvent<HTMLDivElement>) => {
-    const { scrollX, scrollY } = window;
-
-    const { offsetLeft, offsetTop } = currentTarget;
-
-    const offset = pointSize / 2;
-
-    const [x, y] = [
-      clientX - (-scrollX + offsetLeft) - offset,
-      clientY - (-scrollY + offsetTop) - offset,
-    ];
+    const [x, y] = calculatePosition(clientX, clientY, currentTarget);
     setPoints((pts) => [
       ...pts,
       {
         shapeIndex: selectedShape,
         size: pointSize,
         color: selectedColor,
-        x,
-        y,
+        position: { x, y },
       },
     ]);
   };
 
   return (
     <div className="app">
-      <div className="canvas" onClick={click}>
-        {points.map(({ shapeIndex, size, x, y, color }, index) => {
+      <div
+        className="canvas"
+        onClick={draw}
+        onMouseMove={({
+          clientX,
+          clientY,
+          currentTarget,
+        }: React.MouseEvent<HTMLDivElement>) => {
+          const [x, y] = calculatePosition(clientX, clientY, currentTarget);
+          setPreview({
+            x,
+            y,
+          });
+        }}
+        onMouseOut={() => setPreview(undefined)}
+      >
+        {points.map(({ shapeIndex, size, position, color }, index) => {
+          const { x, y } = position;
           return (
             <Shape
               key={index}
@@ -79,6 +103,19 @@ function App() {
             />
           );
         })}
+        {preview && (
+          <Shape
+            key={-1}
+            style={{
+              opacity: 0.8,
+            }}
+            size={pointSize}
+            positionX={preview.x}
+            positionY={preview.y}
+            color={selectedColor}
+            type={SHAPES[selectedShape].shapeType}
+          />
+        )}
       </div>
       <div className="menu">
         <ul className="shapes">

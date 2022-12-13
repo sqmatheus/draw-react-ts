@@ -12,7 +12,7 @@ Inspired by [this video](https://www.youtube.com/watch?v=dOsBtM2U018).
 - [x] Change size of shapes
 - [x] Clear
 - [x] Change color
-- [ ] Preview
+- [x] Preview
 - [ ] Undo
 - [ ] Redo
 
