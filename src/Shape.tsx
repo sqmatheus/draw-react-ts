@@ -7,7 +7,7 @@ export enum ShapeType {
   TRIANGLE = "triangle",
 }
 
-export interface ShapeProps {
+interface ShapeProps {
   size: number;
   type: ShapeType;
   style?: React.CSSProperties;

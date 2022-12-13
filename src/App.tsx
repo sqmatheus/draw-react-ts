@@ -34,7 +34,7 @@ const SHAPES: IShape[] = [
   },
 ];
 
-function App() {
+const App = () => {
   const [points, setPoints] = useState<Point[]>([]);
   const [pointSize, setPointSize] = useState<number>(10);
   const [selectedColor, setSelectedColor] = useState<string>("#ffffff");
@@ -46,48 +46,53 @@ function App() {
     clientX: number,
     clientY: number,
     { offsetLeft, offsetTop }: HTMLDivElement
-  ) => {
+  ): Vec2 => {
     const { scrollX, scrollY } = window;
     const offset = pointSize / 2;
-    return [
-      clientX - (-scrollX + offsetLeft) - offset,
-      clientY - (-scrollY + offsetTop) - offset,
-    ];
+    return {
+      x: clientX - (-scrollX + offsetLeft) - offset,
+      y: clientY - (-scrollY + offsetTop) - offset,
+    };
   };
 
-  const draw = ({
+  const hanldeCanvas = ({
     clientX,
     clientY,
     currentTarget,
   }: React.MouseEvent<HTMLDivElement>) => {
-    const [x, y] = calculatePosition(clientX, clientY, currentTarget);
     setPoints((pts) => [
       ...pts,
       {
         shapeIndex: selectedShape,
         size: pointSize,
         color: selectedColor,
-        position: { x, y },
+        position: calculatePosition(clientX, clientY, currentTarget),
       },
     ]);
+  };
+
+  const handlePreview = ({
+    clientX,
+    clientY,
+    currentTarget,
+  }: React.MouseEvent<HTMLDivElement>) => {
+    setPreview(calculatePosition(clientX, clientY, currentTarget));
+  };
+
+  const handleSlider = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPointSize(Number(event.currentTarget.value));
+  };
+
+  const handleColorPicker = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedColor(event.currentTarget.value);
   };
 
   return (
     <div className="app">
       <div
         className="canvas"
-        onClick={draw}
-        onMouseMove={({
-          clientX,
-          clientY,
-          currentTarget,
-        }: React.MouseEvent<HTMLDivElement>) => {
-          const [x, y] = calculatePosition(clientX, clientY, currentTarget);
-          setPreview({
-            x,
-            y,
-          });
-        }}
+        onClick={hanldeCanvas}
+        onMouseMove={handlePreview}
         onMouseOut={() => setPreview(undefined)}
       >
         {points.map(({ shapeIndex, size, position, color }, index) => {
@@ -146,9 +151,7 @@ function App() {
               max="50"
               value={pointSize}
               step="1"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setPointSize(Number(event.currentTarget.value));
-              }}
+              onChange={handleSlider}
             />
             <h3>{pointSize} px</h3>
           </div>
@@ -158,9 +161,7 @@ function App() {
               id="head"
               name="head"
               value={selectedColor}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setSelectedColor(event.currentTarget.value);
-              }}
+              onChange={handleColorPicker}
             />
             <h3>{selectedColor}</h3>
           </div>
@@ -171,6 +172,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;
