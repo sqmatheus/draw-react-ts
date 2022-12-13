@@ -1,36 +1,41 @@
 import React, { useState } from "react";
+import { Shape, ShapeType } from "./Shape";
 import "./App.css";
 
-interface Shape {
+interface IShape {
   name: string;
-  className: string;
+  shapeType: ShapeType;
 }
 
 interface Point {
   shapeIndex: number;
   size: number;
+  color: string;
   x: number;
   y: number;
 }
 
-const SHAPES: Shape[] = [
+const SHAPES: IShape[] = [
   {
     name: "Circle",
-    className: "circle",
+    shapeType: ShapeType.CIRCLE,
   },
   {
     name: "Square",
-    className: "square",
+    shapeType: ShapeType.SQUARE,
   },
   {
     name: "Triangle",
-    className: "triangle",
+    shapeType: ShapeType.TRIANGLE,
   },
 ];
 
 function App() {
   const [points, setPoints] = useState<Point[]>([]);
   const [pointSize, setPointSize] = useState<number>(10);
+  const [selectedColor, setSelectedColor] = useState<string>("#ffffff");
+  const [selectedShape, setSelectedShape] = useState<number>(0);
+  const [hoverShape, setHoverShape] = useState<string | undefined>(undefined);
 
   const click = ({
     clientX,
@@ -47,38 +52,32 @@ function App() {
       {
         shapeIndex: selectedShape,
         size: pointSize,
+        color: selectedColor,
         x,
         y,
       },
     ]);
   };
 
-  const [selectedShape, setSelectedShape] = useState<number>(0);
-  const [hoverShape, setHoverShape] = useState<string | undefined>(undefined);
-
   return (
     <div className="app">
       <div className="canvas" onClick={click}>
-        {points.map(({ shapeIndex, size, x, y }, index) => {
+        {points.map(({ shapeIndex, size, x, y, color }, index) => {
           return (
-            <div
+            <Shape
               key={index}
-              style={{
-                position: "absolute",
-                left: x,
-                top: y,
-                width: size,
-                height: size,
-                backgroundColor: "red",
-              }}
-              className={SHAPES[shapeIndex].className}
-            ></div>
+              size={size}
+              positionX={x}
+              positionY={y}
+              color={color}
+              type={SHAPES[shapeIndex].shapeType}
+            />
           );
         })}
       </div>
       <div className="menu">
         <ul className="shapes">
-          {SHAPES.map(({ name, className }, index) => {
+          {SHAPES.map(({ name, shapeType }, index) => {
             return (
               <li
                 key={name}
@@ -92,23 +91,37 @@ function App() {
                 onMouseOut={() => setHoverShape(undefined)}
               >
                 {hoverShape === name && <div id="shape-hover">{name}</div>}
-                <div className={className}></div>
+                <Shape size={20} type={shapeType} />
               </li>
             );
           })}
         </ul>
-        <div className="slider">
-          <input
-            type="range"
-            min="10"
-            max="50"
-            value={pointSize}
-            step="1"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setPointSize(Number(event.currentTarget.value));
-            }}
-          />
-          <h3>{pointSize} px</h3>
+        <div className="config">
+          <div className="slider">
+            <input
+              type="range"
+              min="10"
+              max="50"
+              value={pointSize}
+              step="1"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setPointSize(Number(event.currentTarget.value));
+              }}
+            />
+            <h3>{pointSize} px</h3>
+          </div>
+          <div className="color-picker">
+            <input
+              type="color"
+              id="head"
+              name="head"
+              value={selectedColor}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setSelectedColor(event.currentTarget.value);
+              }}
+            />
+            <h3>{selectedColor}</h3>
+          </div>
         </div>
         <div className="clear" onClick={() => setPoints([])}>
           Clear

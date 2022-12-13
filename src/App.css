@@ -41,12 +41,6 @@
   align-items: center;
 }
 
-.shape div {
-  width: 20px;
-  height: 20px;
-  background-color: red;
-}
-
 #shape-hover {
   position: absolute;
   top: -30px;
@@ -64,23 +58,27 @@
   border: 1px solid red;
 }
 
-.circle {
-  border-radius: 50%;
-}
-
-.triangle {
-  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
-}
-
-.slider {
+.config {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  height: 40px;
 }
 
-.slider h3 {
+.config h3 {
   font-weight: 400;
   color: #020202;
+}
+
+.slider,
+.color-picker {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  border-radius: 0.5rem;
+  border: 1px solid #6f6f6f;
+  padding: 0 20px;
+  height: inherit;
 }
 
 .clear {
@@ -94,4 +92,31 @@
   border-radius: 0.5rem;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .menu {
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .shapes {
+    width: inherit;
+    justify-content: space-evenly;
+  }
+
+  .config {
+    width: inherit;
+    justify-content: space-between;
+  }
+
+  .config h3 {
+    font-size: 1rem;
+  }
+
+  .slider,
+  .color-picker {
+    padding: 0 10px;
+  }
 }

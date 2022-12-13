@@ -1,0 +1,7 @@
+.circle {
+  border-radius: 50%;
+}
+
+.triangle {
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+}
