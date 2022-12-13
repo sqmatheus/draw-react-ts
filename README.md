@@ -13,8 +13,8 @@ Inspired by [this video](https://www.youtube.com/watch?v=dOsBtM2U018).
 - [x] Clear
 - [x] Change color
 - [x] Preview
-- [ ] Undo
-- [ ] Redo
+- [x] Undo
+- [x] Redo
 
 # Main page
 

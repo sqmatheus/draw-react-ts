@@ -27,7 +27,7 @@
 
 .shapes {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   list-style-type: none;
 }
 
@@ -62,7 +62,7 @@
 .config {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   height: 40px;
 }
 
@@ -74,7 +74,7 @@
 .slider,
 .color-picker {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   align-items: center;
   border-radius: 0.5rem;
   border: 1px solid #6f6f6f;
@@ -82,34 +82,52 @@
   height: inherit;
 }
 
-.clear {
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.actions button {
   height: 40px;
-  color: white;
-  background-color: red;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
   padding: 0 20px;
   border-radius: 0.5rem;
-  font-weight: 600;
-  text-transform: uppercase;
+  color: white;
 }
 
-@media (max-width: 768px) {
+.actions button:disabled {
+  color: #6f6f6f;
+}
+
+.actions .clear:disabled {
+  color: #adadad;
+}
+
+.clear {
+  background-color: red;
+}
+
+.undo,
+.redo {
+  background-color: #020202;
+}
+
+@media (max-width: 860px) {
   .menu {
     flex-direction: column;
     justify-content: center;
     gap: 1rem;
   }
 
-  .shapes {
-    width: inherit;
-    justify-content: space-evenly;
-  }
-
+  .actions,
+  .shapes,
   .config {
     width: inherit;
-    justify-content: space-between;
+    justify-content: center;
   }
 
   .config h3 {
