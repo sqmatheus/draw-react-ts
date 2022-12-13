@@ -37,13 +37,18 @@ function App() {
     clientY,
     currentTarget,
   }: React.MouseEvent<HTMLDivElement>) => {
+    const offset = pointSize / 2;
+    const [x, y] = [
+      clientX - currentTarget.offsetLeft - offset,
+      clientY - currentTarget.offsetTop - offset,
+    ];
     setPoints((pts) => [
       ...pts,
       {
         shapeIndex: selectedShape,
         size: pointSize,
-        x: clientX - currentTarget.offsetLeft,
-        y: clientY - currentTarget.offsetTop,
+        x,
+        y,
       },
     ]);
   };
@@ -55,15 +60,13 @@ function App() {
     <div className="app">
       <div className="canvas" onClick={click}>
         {points.map(({ shapeIndex, size, x, y }, index) => {
-          const offset = size / 2;
-          const [left, top] = [x - offset, y - offset];
           return (
             <div
               key={index}
               style={{
                 position: "absolute",
-                left,
-                top,
+                left: x,
+                top: y,
                 width: size,
                 height: size,
                 backgroundColor: "red",
