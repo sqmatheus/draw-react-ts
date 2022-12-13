@@ -11,7 +11,7 @@ Inspired by [this video](https://www.youtube.com/watch?v=dOsBtM2U018).
   - [x] Triangle
 - [x] Change size of shapes
 - [x] Clear
-- [ ] Change color
+- [x] Change color
 - [ ] Preview
 - [ ] Undo
 - [ ] Redo
