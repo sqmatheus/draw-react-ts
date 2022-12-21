@@ -1,0 +1,8 @@
+.canvas {
+  position: relative;
+  border-radius: 0.5rem;
+  width: inherit;
+  height: 80vh;
+  background-color: #222222;
+  overflow: hidden;
+}

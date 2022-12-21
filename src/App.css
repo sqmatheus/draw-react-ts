@@ -8,26 +8,15 @@
   width: 95vw;
 }
 
-.canvas {
-  position: relative;
-  border-radius: 0.5rem;
-  width: inherit;
-  height: 80vh;
-  background-color: #020202;
-  overflow: hidden;
-}
-
 .menu {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: inherit;
-  margin-bottom: 1rem;
 }
 
 .shapes {
   display: flex;
-  gap: 0.5rem;
   list-style-type: none;
 }
 
@@ -52,7 +41,7 @@
   justify-content: center;
   align-items: center;
   background-color: #adadad;
-  color: #020202;
+  color: #222222;
 }
 
 .shape-active {
@@ -62,30 +51,28 @@
 .config {
   display: flex;
   align-items: center;
-  gap: 1rem;
   height: 40px;
 }
 
 .config h3 {
   font-weight: 400;
-  color: #020202;
+  color: #222222;
 }
 
 .slider,
 .color-picker {
   display: flex;
-  gap: 0.5rem;
   align-items: center;
   border-radius: 0.5rem;
   border: 1px solid #6f6f6f;
   padding: 0 20px;
   height: inherit;
+  gap: 1rem;
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
 }
 
 .actions button {
@@ -97,6 +84,8 @@
   padding: 0 20px;
   border-radius: 0.5rem;
   color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .actions button:disabled {
@@ -107,20 +96,59 @@
   color: #adadad;
 }
 
+.actions button:enabled {
+  font-weight: 500;
+}
+
 .clear {
   background-color: red;
 }
 
 .undo,
 .redo {
-  background-color: #020202;
+  background-color: #222222;
 }
 
-@media (max-width: 860px) {
+.actions,
+.shapes,
+.config {
+  gap: 0.5rem;
+}
+
+footer {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #222222;
+}
+
+footer a {
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: red;
+  font-weight: 600;
+}
+
+@media (max-width: 560px) {
+  .config {
+    flex-direction: column;
+    justify-content: center;
+    height: 96px;
+    gap: 1rem !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .menu {
+    gap: 1rem;
+  }
+
+  .config {
+    gap: 0.5rem;
+  }
+
   .menu {
     flex-direction: column;
     justify-content: center;
-    gap: 1rem;
   }
 
   .actions,

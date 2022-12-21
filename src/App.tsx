@@ -1,25 +1,26 @@
 import React, { useState } from "react";
 import { Shape, ShapeType } from "./Shape";
 import "./App.css";
+import Canvas from "./Canvas";
 
 interface IShape {
   name: string;
   shapeType: ShapeType;
 }
 
-interface Vec2 {
+export interface Vec2 {
   x: number;
   y: number;
 }
 
-interface Point {
+export interface Point {
   shapeIndex: number;
   size: number;
   color: string;
   position: Vec2;
 }
 
-const SHAPES: IShape[] = [
+export const SHAPES: IShape[] = [
   {
     name: "Circle",
     shapeType: ShapeType.CIRCLE,
@@ -34,63 +35,27 @@ const SHAPES: IShape[] = [
   },
 ];
 
-interface PointsData {
-  points: Point[];
-  undoHistory: Point[];
-}
+export const calculatePosition = (
+  clientX: number,
+  clientY: number,
+  pointSize: number,
+  { offsetLeft, offsetTop }: HTMLDivElement
+): Vec2 => {
+  const { scrollX, scrollY } = window;
+  const offset = pointSize / 2;
+  return {
+    x: clientX - (-scrollX + offsetLeft) - offset,
+    y: clientY - (-scrollY + offsetTop) - offset,
+  };
+};
 
 const App = () => {
-  const [pointsData, setPointsData] = useState<PointsData>({
-    points: [],
-    undoHistory: [],
-  });
   const [pointSize, setPointSize] = useState<number>(10);
   const [selectedColor, setSelectedColor] = useState<string>("#ffffff");
   const [selectedShape, setSelectedShape] = useState<number>(0);
   const [hoverShape, setHoverShape] = useState<string | undefined>(undefined);
-  const [preview, setPreview] = useState<Vec2 | undefined>(undefined);
-
-  const calculatePosition = (
-    clientX: number,
-    clientY: number,
-    { offsetLeft, offsetTop }: HTMLDivElement
-  ): Vec2 => {
-    const { scrollX, scrollY } = window;
-    const offset = pointSize / 2;
-    return {
-      x: clientX - (-scrollX + offsetLeft) - offset,
-      y: clientY - (-scrollY + offsetTop) - offset,
-    };
-  };
-
-  const handleCanvas = ({
-    clientX,
-    clientY,
-    currentTarget,
-  }: React.MouseEvent<HTMLDivElement>) => {
-    setPointsData(({ points, undoHistory }) => {
-      return {
-        points: [
-          ...points,
-          {
-            shapeIndex: selectedShape,
-            size: pointSize,
-            color: selectedColor,
-            position: calculatePosition(clientX, clientY, currentTarget),
-          },
-        ],
-        undoHistory,
-      };
-    });
-  };
-
-  const handlePreview = ({
-    clientX,
-    clientY,
-    currentTarget,
-  }: React.MouseEvent<HTMLDivElement>) => {
-    setPreview(calculatePosition(clientX, clientY, currentTarget));
-  };
+  const [points, setPoints] = useState<Point[]>([]);
+  const [undoHistory, setUndoHistory] = useState<Point[]>([]);
 
   const handleSlider = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPointSize(Number(event.currentTarget.value));
@@ -101,80 +66,32 @@ const App = () => {
   };
 
   const handleUndo = () => {
-    // TODO: make works after clear
-    setPointsData(({ points, undoHistory }) => {
-      const newPoints = [...points];
-      const undo = newPoints.pop();
-      if (undo) {
-        const newUndoHistory = [...undoHistory, undo];
-        return {
-          points: newPoints,
-          undoHistory: newUndoHistory,
-        };
-      }
-      return {
-        points,
-        undoHistory,
-      };
-    });
+    const newPoints = [...points];
+    const undo = newPoints.pop();
+    if (undo) {
+      setPoints(newPoints);
+      setUndoHistory([...undoHistory, undo]);
+    }
   };
 
   const handleRedo = () => {
-    setPointsData(({ points, undoHistory }) => {
-      const newUndoHistory = [...undoHistory];
-      const redo = newUndoHistory.pop();
-      if (redo) {
-        const newPoints = [...points, redo];
-        return {
-          points: newPoints,
-          undoHistory: newUndoHistory,
-        };
-      }
-      return {
-        points,
-        undoHistory,
-      };
-    });
+    const newUndoHistory = [...undoHistory];
+    const redo = newUndoHistory.pop();
+    if (redo) {
+      setUndoHistory(newUndoHistory);
+      setPoints([...points, redo]);
+    }
   };
 
   return (
     <div className="app">
-      <div
-        className="canvas"
-        onClick={handleCanvas}
-        onMouseMove={handlePreview}
-        onMouseOver={handlePreview}
-        onMouseOut={() => setPreview(undefined)}
-      >
-        {pointsData.points.map(
-          ({ shapeIndex, size, position, color }, index) => {
-            const { x, y } = position;
-            return (
-              <Shape
-                key={index}
-                size={size}
-                positionX={x}
-                positionY={y}
-                color={color}
-                type={SHAPES[shapeIndex].shapeType}
-              />
-            );
-          }
-        )}
-        {preview && (
-          <Shape
-            key={-1}
-            style={{
-              opacity: 0.8,
-            }}
-            size={pointSize}
-            positionX={preview.x}
-            positionY={preview.y}
-            color={selectedColor}
-            type={SHAPES[selectedShape].shapeType}
-          />
-        )}
-      </div>
+      <Canvas
+        pointSize={pointSize}
+        selectedColor={selectedColor}
+        selectedShape={selectedShape}
+        points={points}
+        setPoints={setPoints}
+      />
       <div className="menu">
         <ul className="shapes">
           {SHAPES.map(({ name, shapeType }, index) => {
@@ -222,34 +139,33 @@ const App = () => {
         <div className="actions">
           <button
             className="undo"
-            disabled={pointsData.points.length === 0}
+            disabled={points.length === 0}
             onClick={handleUndo}
           >
             Undo
           </button>
           <button
             className="redo"
-            disabled={pointsData.undoHistory.length === 0}
+            disabled={undoHistory.length === 0}
             onClick={handleRedo}
           >
             Redo
           </button>
           <button
             className="clear"
-            disabled={pointsData.points.length === 0}
-            onClick={() =>
-              setPointsData(({ undoHistory }) => {
-                return {
-                  points: [],
-                  undoHistory,
-                };
-              })
-            }
+            disabled={points.length === 0}
+            onClick={() => setPoints([])}
           >
             Clear
           </button>
         </div>
       </div>
+      <footer>
+        made by{" "}
+        <a href="https://github.com/sqmatheus" target="_blank" rel="noreferrer">
+          sqmatheus
+        </a>
+      </footer>
     </div>
   );
 };
